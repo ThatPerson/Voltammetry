@@ -1,0 +1,13 @@
+CONTENTS
+Ox = 100
+Red = 0
+S = 0 
+P = 0
+ECHEM
+peake:7
+scanrate:0.1
+cells:50
+output:1000
+diffusion:0.2
+REACTIONS
+S + Red > P + Ox (1)
