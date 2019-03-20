@@ -25,19 +25,16 @@ output determines how frequently output is written to the file. For small time s
 
 REACTIONS defines all non electrochemical reactions occurring. These are defined as;
 
-``` REACTANTS > PRODUCTS (RATE CONSTANT) 
-```
+`REACTANTS > PRODUCTS (RATE CONSTANT)`
 
 In the example above there is no substrate and no diffusion; this would therefore be expected to give a centrally symmetric cyclic voltammogram. One thing I would like to change is to have independent diffusion coefficients for different species, which would allow for things like surface mounted species to be used too.
 
 The file is run by
 
-``` python file FILENAME LENGTH TIMESTEP OUTPUT 
-```
+`python file FILENAME LENGTH TIMESTEP OUTPUT`
 
 So if I wanted to run a file called CELL1 I might do this by;
 
-``` python file CELL1 2 0.001 CELL1.out 
-```
+`python file CELL1 2 0.001 CELL1.out `
 
 The length and timestep may need to be tuned to prevent overflows.
