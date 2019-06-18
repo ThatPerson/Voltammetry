@@ -147,6 +147,7 @@ def read_file(fl):
     mode = 0
     contents = {}
     reactions = []
+    e_reactions = []
     peake = 0
     scanrate = 0
     output = 1
@@ -162,6 +163,8 @@ def read_file(fl):
                 mode = 3
             if (i.strip() == "REACTIONS"):
                 mode = 2
+            if (i.strip() == "EREACTIONS"):
+                mode = 4
             if (mode == 1):
                 kl = i.strip().split('=')
                 print(kl)
@@ -199,12 +202,21 @@ def read_file(fl):
                     output = int(i[len("OUTPUT")+1:])
                 elif (i[:len("diffusion")] == "diffusion"):
                     diff_coeff = float(i[len("DiFfusion")+1:])
+            if (mode == 4):
+                i = i.strip()
+                l = i.split(",")
+                if (len(l) < 2):
+                    continue
+                ox = l[0].strip()
+                red = l[1].strip()
+                pot = float(l[2])
+                e_reactions.append({"oxid": ox, "red": red, "pot": pot})
 
     print(contents)
     print(reactions)
-    return [contents, reactions, [peake, scanrate, cells, output, diff_coeff]]
+    return [contents, reactions, [peake, scanrate, cells, output, diff_coeff], e_reactions]
 
-def FileReactor(c, r, s, t, f, q):
+def FileReactor(c, r, s, t, f, q, e):
     ''' c and r define the contents and reactions respectively.
     s gives the time that the model will run, t gives the timestep.
     f gives the output file name, and q gives the electrochemical
@@ -242,14 +254,17 @@ def FileReactor(c, r, s, t, f, q):
             # 3. Diffuse between cells
             
             # Set concentration of Ox and Red in Cell 0
-            p = numpy.exp(E)
-            print(fractions[0].contents)
-            q = fractions[0].contents["Ox"] + fractions[0].contents["Red"]
-            new_ox = q - (q / (p+1))
-            new_red = q / (p+1)
-            I = fractions[0].contents["Red"] - new_red
-            fractions[0].contents["Ox"] = new_ox
-            fractions[0].contents["Red"] = new_red
+            I = 0
+            for e_re in e:
+                # e_re is of the form {"oxid":, "red":, "pot":}
+                p = numpy.exp(E - e_re["pot"])
+                print(fractions[0].contents)
+                q = fractions[0].contents[e_re["oxid"]] + fractions[0].contents[e_re["red"]]
+                new_ox = q - (q / (p+1))
+                new_red = q / (p+1)
+                I = I + fractions[0].contents[e_re["red"]] - new_red
+                fractions[0].contents[e_re["oxid"]] = new_ox
+                fractions[0].contents[e_re["red"]] = new_red
             
             # Run Kinetic Model
             for cell in range(0, len(fractions)):
@@ -298,10 +313,10 @@ def main():
         exit()
         
     elif (sys.argv[1] == "file"):
-        [c, r, q] = read_file(sys.argv[2])
+        [c, r, q, e] = read_file(sys.argv[2])
         seconds = float(sys.argv[3])
         timestep = float(sys.argv[4])
-        FileReactor(c, r, seconds, timestep, sys.argv[5], q)
+        FileReactor(c, r, seconds, timestep, sys.argv[5], q, e)
         # Take length and seconds as other arguments
         #
 if __name__ == "__main__":
