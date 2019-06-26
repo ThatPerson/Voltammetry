@@ -13,6 +13,8 @@ scanrate:0.1
 cells:50
 output:1000
 diffusion:0
+EREACTIONS
+Ox, Red, 0
 REACTIONS
 S + Red > P + Ox (1)
 ```
@@ -22,6 +24,8 @@ In CONTENTS all chemical species should be defined. Ox and Red are required for 
 In ECHEM there are 5 options. Peake defines the maximum variation in the potential; the potential will scan from -peake to peake. Scanrate determines how quickly the model moves from one to the other (this does also depend on the timestep as detailed below). cells controls how many cells are produced; These have spatial diffusion which allows for segregation of bulk and electrode. Changing line 258 in cell.py can allow you to print out the concentrations for all cells; analysing this output should allow concentration gradients to be plotted. 
 
 output determines how frequently output is written to the file. For small time steps larger values may be useful to prevent the output files being massive. diffusion determines how freely diffusion occurs. This is based on a very simple model where the new concentration in position x is given by (diffusion*(x-1) + (1-2*diffusion)x + diffusion*(x+1)) where x-1 and x+1 refer to the neighbouring cells.
+
+EREACTIONS defines different electrochemical events. In the above example, this is an event at 0V, while in the CELL1 file there is a three event system.
 
 REACTIONS defines all non electrochemical reactions occurring. These are defined as;
 

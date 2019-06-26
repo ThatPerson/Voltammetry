@@ -1,13 +1,20 @@
 CONTENTS
-Ox = 100
-Red = 0
-S = 0 
-P = 0
+A = 1000 
+B = 0
+C = 0
+D = 0
+E = 5000
+F = 0
 ECHEM
-peake:7
+peake:20
 scanrate:0.1
 cells:50
 output:1000
 diffusion:0.2
+EREACTIONS
+A, B, 10
+B, C, 0
+C, D, -10
+
 REACTIONS
-S + Red > P + Ox (1)
+D + E > A + F (0.1)
